@@ -1,0 +1,57 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.header_1line {
+    align-items: center;
+}
+.header-area .main-nav .nav{
+    float: none !important;
+}
+
+.header_line .row {
+}
+
+.admin-product-create {
+    display: flex;
+    justify-content: right;
+    margin-bottom:30px;
+    margin-top:30px;
+}
+
+
+@media (min-width: 1200px){
+    .header-area .container {
+        max-width: 1387px !important;
+    }
+
+    .header_1line .col-3 {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .index_user_infor {
+        display: flex;
+        align-items: center;
+
+    }
+
+    .edit_dropdown .dropdown-toggle {
+        text-align: center !important;
+    }
+}
