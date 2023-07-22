@@ -1,0 +1,69 @@
+﻿@page
+@model PRN221Project.Pages.Dashboard.CustomerModel
+@{
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Khách hàng</th>
+            <th>Tên khách hàng</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model.Customers)
+        {
+            <tr>
+                <td>@customer.CustomerId</td>
+                <td>@customer.CustomerName</td>
+                <td>@customer.CustomerAddress</td>
+                <td>@customer.CustomerPhone</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="wishlist-page">
+    <div class="container-fluid">
+        <div class="wishlist-page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Add to Cart</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                <tr>
+                                    <td>
+                                        <div class="img">
+                                            <a href="#"><img src="img/product-6.jpg" alt="Image"></a>
+                                            <p>Product Name</p>
+                                        </div>
+                                    </td>
+                                    <td>$99</td>
+                                    <td>
+                                        <div class="qty">
+                                            <button class="btn-minus"><i class="fa fa-minus"></i></button>
+                                            <input type="text" value="1">
+                                            <button class="btn-plus"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </td>
+                                    <td><button class="btn-cart">Add to Cart</button></td>
+                                    <td><button><i class="fa fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

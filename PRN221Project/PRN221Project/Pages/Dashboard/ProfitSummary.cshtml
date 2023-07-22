@@ -1,0 +1,59 @@
+﻿@page
+@model PRN221Project.Pages.Dashboard.ProfitSummaryModel
+@{
+    ViewData["Title"] = "Profit Summary";
+}
+
+<h1>Profit Summary</h1>
+
+<!-- Lọc theo ngày/tháng/năm -->
+<form method="get" class="form-inline">
+    <label class="mr-2">Select Date:</label>
+    <input type="date" class="form-control mb-2 mr-sm-2" asp-for="SelectedDate" />
+    <input type="submit" value="Filter" class="btn btn-primary mb-2" />
+</form>
+
+<!-- Hiển thị thông tin thống kê lợi nhuận -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <h3>Total Profit:</h3>
+        <p>@Model.TotalProfit.ToString("C")</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Total Expense:</h3>
+        <p>@Model.TotalExpense.ToString("C")</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Net Profit:</h3>
+        <p>@Model.NetProfit.ToString("C")</p>
+    </div>
+</div>
+
+<!-- Bảng thống kê lợi nhuận hàng tháng -->
+@if (Model.MonthlyReports != null && Model.MonthlyReports.Any())
+{
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Monthly Profit Report:</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Total Revenue</th>
+                        <th>Total Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var report in Model.MonthlyReports)
+                    {
+                        <tr>
+                            <td>@report.Date.ToString("MMMM yyyy")</td>
+                            <td>@report.TotalRevenue.ToString("C")</td>
+                            <td>@report.TotalProfit.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
