@@ -8,6 +8,7 @@ namespace PRN221Project.Models
         public Inventory()
         {
             OrderDetails = new HashSet<OrderDetail>();
+            ShoppingCarts = new HashSet<ShoppingCart>();
         }
 
         public int ProductId { get; set; }
@@ -21,5 +22,6 @@ namespace PRN221Project.Models
 
         public virtual Supplier? Supplier { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

@@ -13,12 +13,12 @@ namespace PRN221Project.Pages.Dashboard
             _context = context;
         }
 
-        public List<Customer> Customers { get; set; }
-
-        public void OnGet()
-        {
-            // Truy vấn danh sách khách hàng từ bảng "Customers"
-            Customers = _context.Customers.ToList();
-        }
+        //public List<Customer> Customers { get; set; }
+        
+        //public void OnGet()
+        //{
+        //    // Truy vấn danh sách khách hàng từ bảng "Customers"
+        //    Customers = _context.Customers.ToList();
+        //}
     }
 }

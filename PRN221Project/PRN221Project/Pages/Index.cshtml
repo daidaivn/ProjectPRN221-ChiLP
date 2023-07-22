@@ -4,38 +4,62 @@
     ViewData["Title"] = "Home page";
 }
 <div class="product-view-top">
-    <div class="container">
-        <form method="get">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <h4>Hello. Welcome to Elegant Styles</h4>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <select id="categoryId" name="categoryId" asp-for="SelectedCategoryId" asp-items="Model.CategoryOptions" class="form-select">
-                            <option value="">All category</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <div class="row ">
+        <div class="col-md-11">
             <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input placeholder="Input name product" type="text" id="searchString" name="searchString" class="form-control">
+                <form method="get">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h4>Hello. Welcome to Elegant Styles</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <select id="categoryId" name="categoryId" asp-for="SelectedCategoryId" asp-items="Model.CategoryOptions" class="form-select">
+                                    <option value="">All category</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary w-100">Search and filter</button>
-                </div>
-                <div class="col-md-3 d-flex justify-content-center">
-                    <a asp-page="/Dashboard/Product" class="btn btn-secondary w-100">Cancel Search and filter</a>
-                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input placeholder="Input name product" type="text" id="searchString" name="searchString" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary w-100">Search and filter</button>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <a asp-page="/Dashboard/Product" class="btn btn-secondary w-100">Cancel Search and filter</a>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <div class="col-md-1 d-flex justify-content-center align-items-center">
+            <div class="user">
+                <a asp-area="" asp-page="/All/Cart" class="btn cart">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>(0)</span>
+                </a>
+            </div>
+        </div>
     </div>
+
 </div>
 
+<!-- Pagination Start -->
+@{
+    var currentPage = Model.Products.PageIndex;
+    var totalPages = Model.Products.TotalPages;
 
+    var prevDisabled = currentPage == 1 ? "disabled" : "";
+    var nextDisabled = currentPage == totalPages ? "disabled" : "";
+
+    var startPage = Math.Max(1, currentPage - 2);
+    var endPage = Math.Min(startPage + 4, totalPages);
+}
 
 <div class="row">
     <div class="col-lg-8">
@@ -44,51 +68,54 @@
             </div>
 
             <div class="row">
-                @foreach (var product in Model.Products)
+                @if (Model.Products != null)
                 {
-                    <div class="col-md-4">
-                        <div class="product-item">
-                            <div class="product-title">
-                                <a href="#">@product.ProductName</a>
-                                <div class="ratting">
-                                    @for (int i = 0; i < 5; i++)
-                                    {
-                                        <i class="fa fa-star"></i>
-                                    }
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-4">
+                            <div class="product-item">
+                                <div class="product-title">
+                                    <a href="#">@product.ProductName</a>
+                                    <div class="ratting">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <i class="fa fa-star"></i>
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="image-index-product product-image ">
-                                <a href="product-detail.html">
-                                    <img class="image-index-product" src="@product.Image" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
+                                <div class="image-index-product product-image ">
+                                    <a href="product-detail.html">
+                                        <img class="image-index-product" src="@product.Image" alt="Product Image">
+                                    </a>
+                                    <form method="post" asp-page-handler="AddToCart" asp-route-pageIndex="@currentPage">
+                                        <div style="margin-left:10px;margin-bottom:5px">
+                                            <input type="number" name="proId" value="@product.ProductId" hidden>
+                                            <input hidden type="number" name="proQuantity" value="1" min="0">
+                                        </div>
+                                        <div class="product-action">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <button type="submit">
+                                                <a><i class="fa fa-cart-plus"></i></a>
+                                            </button>
+                                            <a href="#"><i class="fa fa-heart"></i></a>
+                                            <a href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </form>
+
                                 </div>
-                            </div>
-                            <div class="product-price">
-                                <h3 class=""><span>$</span>@product.UnitPrice</h3>
-                                <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                <div class="product-price">
+                                    <h3 class=""><span>$</span>@product.UnitPrice</h3>
+                                    <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
             </div>
 
         </div>
 
-        <!-- Pagination Start -->
-        @{
-            var currentPage = Model.Products.PageIndex;
-            var totalPages = Model.Products.TotalPages;
 
-            var prevDisabled = currentPage == 1 ? "disabled" : "";
-            var nextDisabled = currentPage == totalPages ? "disabled" : "";
-
-            var startPage = Math.Max(1, currentPage - 2);
-            var endPage = Math.Min(startPage + 4, totalPages);
-        }
 
         <div class="col-md-12">
             <nav aria-label="Page navigation example">
@@ -134,86 +161,38 @@
     <div class="col-lg-4 sidebar">
         <div class="sidebar-widget widget-slider">
             <div class="sidebar-slider normal-slider">
-                <div class="product-item">
-                    <div class="product-title">
-                        <a href="#">Product Name</a>
-                        <div class="ratting">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
+                @foreach (var product in Model.TopProducts)
+                {
+                    <div class="product-item">
+                        <div class="product-title">
+                            <a href="#">@product.ProductName</a>
+                            <div class="ratting">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="product-image">
+                            <a href="product-detail.html">
+                                <img src="@product.Image" alt="Product Image">
+                            </a>
+                            <div class="product-action">
+                                <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                <a href="#"><i class="fa fa-heart"></i></a>
+                                <a href="#"><i class="fa fa-search"></i></a>
+                            </div>
+                        </div>
+                        <div class="product-price">
+                            <h3><span>$</span>@product.UnitPrice</h3>
+                            <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
                         </div>
                     </div>
-                    <div class="product-image">
-                        <a href="product-detail.html">
-                            <img src="img/product-10.jpg" alt="Product Image">
-                        </a>
-                        <div class="product-action">
-                            <a href="#"><i class="fa fa-cart-plus"></i></a>
-                            <a href="#"><i class="fa fa-heart"></i></a>
-                            <a href="#"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="product-price">
-                        <h3><span>$</span>99</h3>
-                        <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
-                    </div>
-                </div>
-                <div class="product-item">
-                    <div class="product-title">
-                        <a href="#">Product Name</a>
-                        <div class="ratting">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="product-image">
-                        <a href="product-detail.html">
-                            <img src="img/product-9.jpg" alt="Product Image">
-                        </a>
-                        <div class="product-action">
-                            <a href="#"><i class="fa fa-cart-plus"></i></a>
-                            <a href="#"><i class="fa fa-heart"></i></a>
-                            <a href="#"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="product-price">
-                        <h3><span>$</span>99</h3>
-                        <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
-                    </div>
-                </div>
-                <div class="product-item">
-                    <div class="product-title">
-                        <a href="#">Product Name</a>
-                        <div class="ratting">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="product-image">
-                        <a href="product-detail.html">
-                            <img src="img/product-8.jpg" alt="Product Image">
-                        </a>
-                        <div class="product-action">
-                            <a href="#"><i class="fa fa-cart-plus"></i></a>
-                            <a href="#"><i class="fa fa-heart"></i></a>
-                            <a href="#"><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="product-price">
-                        <h3><span>$</span>99</h3>
-                        <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
-                    </div>
-                </div>
+                }
             </div>
         </div>
+
 
         <div class="sidebar-widget brands">
             <h2 class="title">Our Brands</h2>

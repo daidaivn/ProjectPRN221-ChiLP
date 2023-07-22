@@ -1,0 +1,81 @@
+﻿@page
+@model PRN221Project.Pages.All.CartModel
+@{
+    decimal totalBill = 0;
+}
+@if (!string.IsNullOrEmpty(TempData["PaymentSuccess"] as string))
+{
+    <div class="payment-success">
+        <h3>Payment Successful!</h3>
+        <p>Thank you for your purchase.</p>
+        <p>Here is a summary of your order:</p>
+        <ul>
+            @foreach (var (product, quantity) in Model.ProductListCart)
+            {
+                <li>@product.ProductName - Quantity: @quantity</li>
+            }
+        </ul>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
+}
+else
+{
+    @if (Model.ProductListCart != null && Model.ProductListCart.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col" class="quantityCart">Quantity</th>
+                    <th scope="col" class="actionEditCart">Edit</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.ProductListCart)
+                {
+                    @if (product.Item1 != null)
+                    {
+                        decimal productPrice = (decimal)product.Item1.UnitPrice;
+                        int productQuantity = product.proQuantity;
+                        decimal total = (productPrice * productQuantity) / 1.000000000000000000000000000000000m;
+                        totalBill += total;
+
+                        <form method="post">
+                        <tr>
+                            <td>@product.Item1.ProductName</td>
+                            <td>@product.Item1.UnitPrice</td>
+                            <td>
+                                <input type="number" name="proid" min="0" value="@product.Item1.ProductId" hidden>
+                                <input class="quantityCart" onchange="this.form.submit()" name="proQuantity" min="1" value="@product.proQuantity">
+                            </td>
+                            <td class="actionEditCart">
+                                <a asp-page="/All/CartDelete" asp-route-proId="@product.Item1.ProductId" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                            <td>@total</td>
+                        </tr>
+                        </form>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <div style="margin-right:100px;">
+            <h3 style="float:right;color:red">Total: @totalBill</h3>
+            @if (Model.ProductListCart.Count > 0)
+            {
+                <a asp-page="/All/CarBuyProduct" class="btn btn-success" style="float:right;margin-right:35px;">Buy Now</a>
+            }
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+    }
+    else
+    {
+        <div>
+            <p>Your cart is empty.</p>
+            <a href="/" class="btn btn-primary">Back to Home</a>
+        </div>
+    }
+}
+

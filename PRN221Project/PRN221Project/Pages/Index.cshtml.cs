@@ -18,14 +18,14 @@ namespace PRN221Project.Pages
         public PaginatedList<Product> Products { get; set; }
         public List<ProductCategory> Categories { get; set; }
         public List<SelectListItem> CategoryOptions { get; set; }
-
+        public List<Product> TopProducts { get; set; }
         // Các thuộc tính để lưu trạng thái của các tham số tìm kiếm và lọc
         public string CurrentFilter { get; set; }
         [BindProperty(SupportsGet = true)]
 
         public int? SelectedCategoryId { get; set; }
 
-
+        public int TotalProductInCart { get; set; }
         // Danh sách sản phẩm hiển thị trên trang
 
         // Danh sách các danh mục sản phẩm để hiển thị trong dropdown
@@ -81,6 +81,142 @@ namespace PRN221Project.Pages
                 Text = c.CategoryName,
                 Selected = c.CategoryId == SelectedCategoryId
             }).ToList();
+
+            TopProducts = _context.Products.OrderByDescending(p => p.Quantity).Take(5).ToList();
         }
+
+        public IActionResult OnPostAddToCart(int proId, int proQuantity, int? pageIndex)
+        {
+            if (proId > 0 && proQuantity > 0)
+            {
+                appenCookie(proId, proQuantity);
+                return RedirectToPage("Index", new { pageIndex });
+            }
+
+            return RedirectToPage("Error");
+        }
+
+        public void appenCookie(int id, int quantity)
+        {
+
+            CookieOptions options = new CookieOptions();
+
+            //get cookie 
+            var cookie = Request.Cookies["myCard"];
+
+
+            //if cookie is null
+            if (cookie == null)
+
+            {   //set Key
+                string key = "myCard";
+
+                //set value
+                string value = id.ToString() + "-" + quantity.ToString();
+
+                //set time expire
+                options.Expires = DateTime.Now.AddSeconds(1000);
+
+                //apend cookie
+                Response.Cookies.Append(key, value, options);
+            }
+
+            //if not null
+            else
+            {
+                //create list to store id and quantity
+                var mylist = new List<(int proId, int proQuantity)>();
+
+                //empty string to append new cookie
+                string newCookie = "";
+
+                //list to split by ' AND '
+                string[] items = cookie.Split("AND");
+
+
+                foreach (string item in items)
+                {
+                    //list to split by ' - '
+                    string[] pair = item.Split("-");
+                    try
+                    {
+                        //add to list with Key and Value
+                        mylist.Add((int.Parse(pair[0]), int.Parse(pair[1])));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("error " + ex);
+                    }
+                }
+
+
+                //check duplicate id
+                bool checkDuplicate = false;
+
+                foreach (var item in mylist)
+                {
+                    //if id already exist in list
+                    if (item.proId == id)
+                    {
+                        //return true
+                        checkDuplicate = true;
+                        break;
+                    }
+                }
+
+
+                if (checkDuplicate)
+                {
+                    for (int i = 0; i < mylist.Count; i++)
+                    {
+                        //if id exist in list
+                        if (mylist[i].Item1 == id)
+                        {
+                            //update product in list
+                            mylist[i] = (mylist[i].Item1, mylist[i].Item2 + quantity);
+                            break;
+                        }
+
+                    }
+
+                    foreach (var item in mylist)
+                    {
+                        //append new cookie
+                        newCookie += "AND" + item.proId + "-" + item.proQuantity;
+                    }
+
+                    if (newCookie.Substring(0, 3).Equals("AND"))
+                    {
+                        //substring if string begin with 'AND'
+                        newCookie = newCookie.Substring(3, newCookie.Length - 3);
+
+                    }
+
+                    //delete current cookie
+                    // Response.Cookies.Delete(cookie);
+
+                    //add new cookie with new string
+                    options.Expires = DateTime.Now.AddSeconds(1000);
+                    Response.Cookies.Append("myCard", newCookie, options);
+
+
+                }
+
+                //if ID not exist in cookie
+                else
+                {
+                    //append next to string
+                    cookie += "AND" + id.ToString() + "-" + quantity.ToString();
+                    options.Expires = DateTime.Now.AddSeconds(1000);
+                    Response.Cookies.Append("myCard", cookie, options);
+                }
+
+
+
+            }
+
+
+        }
+
     }
 }

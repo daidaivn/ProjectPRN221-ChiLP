@@ -1,0 +1,32 @@
+﻿@page
+@model PRN221Project.Pages.All.LoginModelModel
+@{
+}
+<div class="page-heading" id="top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="inner-content">
+                    <h1>Đăng nhập</h1>
+                    <form method="post">
+                        <div>
+                            <label for="Username">Tên đăng nhập:</label>
+                            <input type="text" id="Username" name="Username" asp-for="Username" />
+                        </div>
+                        <div>
+                            <label for="Password">Mật khẩu:</label>
+                            <input type="password" id="Password" name="Password" asp-for="Password" />
+                        </div>
+                        <input type="submit" value="Đăng nhập" />
+                        <a class=" btn nav-link text-dark" asp-area="" asp-page="/Index">Back to Home</a>
+                    </form>
+
+                    @if (Model.LoginFailed)
+                    {
+                        <p>Đăng nhập không thành công. Vui lòng kiểm tra lại thông tin đăng nhập.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

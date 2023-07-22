@@ -24,6 +24,7 @@ namespace PRN221Project.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductCategory> ProductCategories { get; set; } = null!;
         public virtual DbSet<Profit> Profits { get; set; } = null!;
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
         public virtual DbSet<Supplier> Suppliers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
@@ -199,6 +200,36 @@ namespace PRN221Project.Models
                     .WithMany(p => p.Profits)
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("FK__Profits__OrderID__4AB81AF0");
+            });
+
+            modelBuilder.Entity<ShoppingCart>(entity =>
+            {
+                entity.HasKey(e => e.CartId)
+                    .HasName("PK__Shopping__51BCD797532A1DE5");
+
+                entity.ToTable("ShoppingCart");
+
+                entity.Property(e => e.CartId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CartID");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.ShoppingCarts)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK__ShoppingC__Custo__5DCAEF64");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ShoppingCarts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK__ShoppingC__Produ__5EBF139D");
             });
 
             modelBuilder.Entity<Supplier>(entity =>

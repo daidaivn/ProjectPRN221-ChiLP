@@ -1,9 +1,12 @@
-﻿//using Project221.Hubs;
-//using Project221.Models;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PRN221Project.Models;
 
-public class Program221
+public class Program
 {
     public static void Main(string[] args)
     {
@@ -48,6 +51,7 @@ public class Program221
 
         app.UseRouting();
 
+        app.UseAuthentication(); // Sử dụng xác thực
         app.UseAuthorization();
 
         // Kích hoạt session
